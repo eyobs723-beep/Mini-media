@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101426">
+<meta name="description" content="HBSS Music Dedications — school mini media song requests and dedications.">
+<title>HBSS Music | Mini Media</title>
+<style>
+  :root{
+    --bg:#0b1020;--panel:#141b31;--panel2:#1a2340;--text:#f5f7ff;--muted:#aab4d1;
+    --accent:#7c5cff;--accent2:#25d6b1;--line:rgba(255,255,255,.11);
+    --danger:#ff6b7d;--gold:#ffd166;--shadow:0 20px 60px rgba(0,0,0,.25);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);
+    background:radial-gradient(ellipse at 15% 0%,rgba(124,92,255,.22),transparent 38%),
+               radial-gradient(ellipse at 95% 18%,rgba(37,214,177,.12),transparent 30%),var(--bg);min-height:100vh}
+  .wrap{width:min(1050px,100%);margin:auto;padding:24px 16px 48px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:25px;
+    background:linear-gradient(135deg,var(--accent),#a78bfa);box-shadow:0 8px 28px #7c5cff55}
+  .brand h1{font-size:18px;line-height:1.1;margin:0;letter-spacing:.2px}
+  .brand p{margin:5px 0 0;color:var(--muted);font-size:12px}
+  .leader-tag{border:1px solid var(--line);border-radius:999px;padding:9px 12px;color:#d8ddf5;font-size:12px;white-space:nowrap}
+  .hero{padding:30px 26px;border:1px solid var(--line);border-radius:28px;background:linear-gradient(125deg,rgba(124,92,255,.17),rgba(37,214,177,.06)),rgba(20,27,49,.82);box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .hero:after{content:"♫";position:absolute;right:24px;top:-28px;font-size:170px;color:#ffffff08;transform:rotate(12deg);pointer-events:none}
+  .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);font-weight:800}
+  h2{font-size:clamp(30px,6vw,48px);line-height:1.05;letter-spacing:-1.5px;margin:12px 0}
+  .hero p{color:var(--muted);max-width:590px;line-height:1.7;margin:0}
+  .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+  .stat{padding:11px 14px;border:1px solid var(--line);border-radius:14px;background:#0b102055;font-size:13px}
+  .stat strong{color:var(--accent2);font-size:16px;margin-right:5px}
+  .layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:18px;margin-top:20px;align-items:start}
+  .card{border:1px solid var(--line);border-radius:22px;padding:22px;background:rgba(20,27,49,.92);box-shadow:var(--shadow)}
+  .card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+  .card h3{font-size:19px;margin:0}
+  .sub{color:var(--muted);font-size:13px;margin:6px 0 0;line-height:1.5}
+  label{display:block;font-size:12px;font-weight:750;color:#d9def2;margin:16px 0 8px}
+  input,textarea{width:100%;border:1px solid #303b5d;border-radius:12px;background:#0d1326;color:var(--text);font:inherit;font-size:14px;padding:13px 14px;outline:none;transition:border .2s,box-shadow .2s}
+  input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px #7c5cff28}
+  textarea{min-height:100px;resize:vertical}
+  input::placeholder,textarea::placeholder{color:#7581a5}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:13px 16px;font-size:14px;font-weight:800;cursor:pointer;transition:transform .15s,opacity .15s}
+  .btn:active{transform:scale(.98)}
+  .primary{width:100%;margin-top:18px;color:white;background:linear-gradient(100deg,var(--accent),#5d7cff);box-shadow:0 8px 22px #7c5cff33}
+  .secondary{background:#222d4d;color:#e8ebff;border:1px solid var(--line)}
+  .small{padding:8px 10px;font-size:12px}
+  .notice{padding:13px 14px;border-radius:12px;background:#25d6b112;border:1px solid #25d6b133;color:#bff9eb;font-size:12px;line-height:1.6;margin-top:14px}
+  .limit{display:flex;align-items:center;gap:12px;margin:16px 0;padding:14px;border-radius:14px;background:#0d1326;border:1px solid var(--line)}
+  .limit-num{font-size:26px;font-weight:900;min-width:50px;color:var(--accent2)}
+  .limit-text{font-size:12px;color:var(--muted);line-height:1.5}
+  .progress{height:6px;background:#2a3351;border-radius:99px;overflow:hidden;margin-top:8px}
+  .progress span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .25s}
+  .status{font-size:12px;color:var(--muted);line-height:1.6}
+  .request-list{display:grid;gap:10px;margin-top:14px}
+  .request{border:1px solid var(--line);border-radius:14px;padding:13px;background:#0e1428}
+  .request-top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+  .request strong{font-size:13px}
+  .request p{margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+  .pill{display:inline-block;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800;background:#25d6b11a;color:#7ef0d7;white-space:nowrap}
+  .pill.played{background:#ffd1661b;color:var(--gold)}
+  .empty{padding:24px 12px;text-align:center;border:1px dashed #34405f;border-radius:14px;color:var(--muted);font-size:13px}
+  details{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+  summary{cursor:pointer;color:#d8def5;font-size:13px;font-weight:800}
+  .admin-tools{display:grid;gap:10px;margin-top:14px}
+  .admin-tools input{font-size:12px}
+  .footer{text-align:center;color:#7581a5;font-size:11px;line-height:1.7;margin-top:26px}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#202a47;border:1px solid var(--line);color:white;padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);font-size:13px;max-width:calc(100% - 32px);transition:.25s;z-index:10}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .disabled{opacity:.5;cursor:not-allowed}
+  @media(max-width:760px){.layout{grid-template-columns:1fr}.hero{padding:25px 20px}.card{padding:18px}.leader-tag{font-size:10px;padding:8px}.wrap{padding:18px 13px 36px}}
+  @media(max-width:420px){.two{grid-template-columns:1fr;gap:0}.brand h1{font-size:16px}.logo{width:42px;height:42px}.leader-tag{max-width:120px;white-space:normal;text-align:center}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true">♫</div>
+      <div><h1>HBSS Music</h1><p>School Mini Media • Music Dedications</p></div>
+    </div>
+    <div class="leader-tag">Mini Media Leader: <strong>Eyob S.</strong></div>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">Your song • Your message • Your moment</div>
+    <h2>Dedicate a song.<br>Make someone's day.</h2>
+    <p>Send a music dedication to a friend at HBSS. Write the song you want, add a personal message, and let the mini media team take it from there.</p>
+    <div class="stats">
+      <div class="stat"><strong>03</strong> requests per school day</div>
+      <div class="stat"><strong>01</strong> song per request</div>
+      <div class="stat"><strong>♥</strong> made for our school</div>
+    </div>
+  </section>
+
+  <main class="layout">
+    <section class="card">
+      <div class="card-head">
+        <div><h3>🎧 Request a dedication</h3><p class="sub">Fill in all four details below.</p></div>
+      </div>
+      <div class="limit" aria-live="polite">
+        <div class="limit-num" id="countText">3/3</div>
+        <div class="limit-text" style="flex:1"><strong id="limitTitle" style="color:var(--text)">Daily requests available</strong><div id="limitDesc">Only the first 3 requests are accepted each school day.</div><div class="progress"><span id="progressBar"></span></div></div>
+      </div>
+      <form id="requestForm">
+        <div class="two">
+          <div><label for="requester">Your name</label><input id="requester" name="requester" maxlength="60" placeholder="Enter your name" required></div>
+          <div><label for="friend">Friend's name</label><input id="friend" name="friend" maxlength="60" placeholder="Who is this for?" required></div>
+        </div>
+        <label for="song">Song title and artist (if known)</label>
+        <input id="song" name="song" maxlength="120" placeholder="Type any song title — add artist if you know it" required>
+        <label for="message">Dedication message</label>
+        <textarea id="message" name="message" maxlength="400" placeholder="What would you like to say to your friend?" required></textarea>
+        <button class="btn primary" id="submitBtn" type="submit">Send my dedication <span aria-hidden="true">→</span></button>
+        <div class="notice">Please submit respectfully. Song requests are reviewed by the mini media leader and are played subject to school rules and available equipment.</div>
+      </form>
+    </section>
+
+    <aside class="card">
+      <div class="card-head">
+        <div><h3>📻 How it works</h3><p class="sub">Simple, fair, and first come, first served.</p></div>
+      </div>
+      <div class="request-list">
+        <div class="request"><div class="request-top"><strong>01 · Write your request</strong><span class="pill">STUDENT</span></div><p>Enter your name, your friend's name, the song, and your message.</p></div>
+        <div class="request"><div class="request-top"><strong>02 · Limited to 3</strong><span class="pill">DAILY</span></div><p>Only three requests are accepted per school day. Once full, requests close until the next day.</p></div>
+        <div class="request"><div class="request-top"><strong>03 · Mini media plays it</strong><span class="pill">ON AIR</span></div><p>Eyob S. reviews the queue and uses the school's approved music player to play the selected songs.</p></div>
+      </div>
+      <details>
+        <summary>Leader dashboard (demo on this device)</summary>
+        <p class="sub">This demo dashboard is not securely protected. For real use, connect a backend and secure leader sign-in before publishing.</p>
+        <div class="admin-tools">
+          <button class="btn secondary" type="button" id="exportBtn">Export requests (CSV)</button>
+          <button class="btn secondary" type="button" id="resetBtn">Reset demo data</button>
+        </div>
+        <div id="adminList" class="request-list"></div>
+      </details>
+    </aside>
+  </main>
+  <div class="footer">
+    <strong>HBSS Music Dedications</strong> · Mini Media Leader Eyob S.<br>
+    Student-friendly demo website. Please use responsibly and follow school guidelines.
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+/*
+  FRONT-END DEMO ONLY:
+  Requests are saved in this browser's localStorage. This does NOT enforce a shared
+  3-request limit across different phones. Before real school-wide use, connect a
+  backend such as Supabase and enforce the daily cap atomically on the server.
+  Set SCHOOL_TIME_ZONE to the school's IANA timezone if it differs from the browser.
+*/
+const SCHOOL_TIME_ZONE = 'Africa/Addis_Ababa';
+const STORAGE_KEY = 'hbss_music_demo_requests_v1';
+const $ = (id) => document.getElementById(id);
+
+function schoolDateKey(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: SCHOOL_TIME_ZONE, year: 'numeric', month: '2-digit', day: '2-digit'
+  }).formatToParts(date);
+  const p = Object.fromEntries(parts.map(x => [x.type, x.value]));
+  return `${p.year}-${p.month}-${p.day}`;
+}
+function loadAll() {
+  try { const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); return Array.isArray(data) ? data : []; }
+  catch { return []; }
+}
+function saveAll(items) { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }
+function todayRequests() { const today = schoolDateKey(); return loadAll().filter(r => r.day === today); }
+function escapeHTML(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function showToast(msg) {
+  $('toast').textContent = msg; $('toast').classList.add('show');
+  setTimeout(() => $('toast').classList.remove('show'), 2800);
+}
+function updateUI() {
+  const count = todayRequests().length;
+  const remaining = Math.max(0, 3 - count);
+  $('countText').textContent = `${remaining}/3`;
+  $('progressBar').style.width = `${(count/3)*100}%`;
+  $('limitTitle').textContent = remaining ? 'Daily requests available' : 'Daily Request Limit Reached';
+  $('limitDesc').textContent = remaining
+    ? `${remaining} request${remaining === 1 ? '' : 's'} left today. First come, first served.`
+    : 'All 3 requests have been accepted. Please try again tomorrow.';
+  $('submitBtn').disabled = remaining === 0;
+  $('submitBtn').classList.toggle('disabled', remaining === 0);
+  $('submitBtn').innerHTML = remaining ? 'Send my dedication <span aria-hidden="true">→</span>' : 'Daily Request Limit Reached';
+  renderAdmin();
+}
+function renderAdmin() {
+  const all = loadAll().filter(r => r.day === schoolDateKey());
+  if (!all.length) {
+    $('adminList').innerHTML = '<div class="empty">No requests saved on this device today.</div>'; return;
+  }
+  $('adminList').innerHTML = all.map((r, i) => `
+    <div class="request">
+      <div class="request-top"><strong>${String(i+1).padStart(2,'0')} · ${escapeHTML(r.song)}</strong><span class="pill ${r.played?'played':''}">${r.played?'PLAYED':'PENDING'}</span></div>
+      <p><b>From:</b> ${escapeHTML(r.requester)}<br><b>For:</b> ${escapeHTML(r.friend)}<br><b>Message:</b> ${escapeHTML(r.message)}</p>
+      <button class="btn secondary small" type="button" data-toggle="${escapeHTML(r.id)}">${r.played?'Mark pending':'Mark played'}</button>
+    </div>`).join('');
+  $('adminList').querySelectorAll('[data-toggle]').forEach(btn => btn.addEventListener('click', () => {
+    const items = loadAll(); const item = items.find(x => x.id === btn.dataset.toggle);
+    if (item) { item.played = !item.played; saveAll(items); updateUI(); showToast(item.played ? 'Marked as played.' : 'Marked as pending.'); }
+  }));
+}
+$('requestForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const today = todayRequests();
+  if (today.length >= 3) { updateUI(); showToast('Daily Request Limit Reached. Try tomorrow.'); return; }
+  const requester = $('requester').value.trim(), friend = $('friend').value.trim();
+  const song = $('song').value.trim(), message = $('message').value.trim();
+  if (!requester || !friend || !song || !message) { showToast('Please complete every field.'); return; }
+  const items = loadAll();
+  items.push({ id: `${Date.now()}-${Math.random().toString(36).slice(2,8)}`, day: schoolDateKey(),
+    requester, friend, song, message, played: false, createdAt: new Date().toISOString() });
+  saveAll(items); $('requestForm').reset(); updateUI();
+  showToast('Demo request saved on this device. Thank you!');
+});
+$('exportBtn').addEventListener('click', () => {
+  const rows = todayRequests();
+  if (!rows.length) { showToast('There are no requests to export.'); return; }
+  const csvCell = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const csv = [['Date','Requester','Friend','Song','Message','Status'], ...rows.map(r => [r.day,r.requester,r.friend,r.song,r.message,r.played?'Played':'Pending'])]
+    .map(row => row.map(csvCell).join(',')).join('\r\n');
+  const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob); const a = document.createElement('a');
+  a.href = url; a.download = `hbss-music-requests-${schoolDateKey()}.csv`; a.click(); URL.revokeObjectURL(url);
+  showToast('CSV export downloaded.');
+});
+$('resetBtn').addEventListener('click', () => {
+  if (confirm('Delete all HBSS Music demo requests saved in this browser?')) {
+    localStorage.removeItem(STORAGE_KEY); updateUI(); showToast('Demo data cleared.');
+  }
+});
+updateUI();
+</script>
+</body>
+</html>
