@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — HBSS Mini Media</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body{padding:0}
+  .admin-shell{display:none}
+  .login-view{max-width:400px;margin:3rem auto;padding:1.25rem}
+  .admin-shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+  .sidebar{background:linear-gradient(180deg,#0f1531,#1a1145);padding:1rem;border-right:1px solid rgba(139,92,246,.3)}
+  .sidebar h2{font-size:1rem;margin-bottom:1rem;color:var(--accent)}
+  .sidebar button{display:block;width:100%;text-align:left;background:transparent;
+    color:var(--text);border:none;padding:.6rem .75rem;border-radius:8px;
+    margin-bottom:.25rem;cursor:pointer;font:inherit;font-size:.9rem}
+  .sidebar button.active,.sidebar button:hover{background:rgba(139,92,246,.2)}
+  .admin-main{padding:1.25rem;overflow-x:auto}
+  .stat-grid{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:1.25rem}
+  .stat{background:var(--card);padding:1rem;border-radius:var(--radius);text-align:center}
+  .stat h4{font-size:.75rem;color:var(--muted);margin-bottom:.4rem;text-transform:uppercase}
+  .stat p{font-size:1.4rem;font-weight:700;color:var(--accent)}
+  .admin-panel{display:none}
+  .admin-panel.active{display:block}
+  table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden}
+  th,td{padding:.6rem;text-align:left;font-size:.85rem;border-bottom:1px solid rgba(139,92,246,.15)}
+  th{background:var(--card-2);color:var(--accent);font-size:.75rem;text-transform:uppercase}
+  .row-actions{display:flex;gap:.25rem;flex-wrap:wrap}
+  .row-actions button{font-size:.75rem;padding:.3rem .5rem;border-radius:6px;border:none;cursor:pointer}
+  .btn-approve{background:var(--success);color:#000}
+  .btn-reject{background:var(--danger);color:#fff}
+  .btn-play{background:var(--blue);color:#fff}
+  .btn-pub{background:var(--purple);color:#fff}
+  .search-bar{margin-bottom:.75rem;display:flex;gap:.5rem}
+  .search-bar input{max-width:300px}
+  @media(max-width:760px){
+    .admin-shell{grid-template-columns:1fr}
+    .sidebar{position:sticky;top:0;z-index:20;display:flex;overflow-x:auto;gap:.25rem;padding:.5rem}
+    .sidebar h2{display:none}
+    .sidebar button{white-space:nowrap;width:auto}
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-view" id="login-view">
+  <h2 style="margin-bottom:1rem">🔒 Admin Sign In</h2>
+  <form id="login-form">
+    <label>Email <input type="email" name="email" required></label>
+    <label>Password <input type="password" name="password" required></label>
+    <button class="btn-primary" type="submit">Sign In</button>
+    <p class="form-msg" id="login-msg" role="status"></p>
+  </form>
+  <p style="margin-top:1rem;font-size:.8rem" class="muted">
+    <a href="index.html" style="color:var(--blue)">← Back to public site</a>
+  </p>
+</div>
+
+<!-- DASHBOARD -->
+<div class="admin-shell" id="admin-shell">
+  <aside class="sidebar">
+    <h2>Admin Menu</h2>
+    <button data-panel="overview" class="active">📊 Overview</button>
+    <button data-panel="songs">🎵 Song Requests</button>
+    <button data-panel="questions">❓ Manage Questions</button>
+    <button data-panel="answers">📝 Quiz Answers</button>
+    <button data-panel="winner">🏆 Select Winner</button>
+    <button data-panel="announcements">📢 Winners</button>
+    <button data-panel="settings">⚙️ Settings</button>
+    <button id="logout-btn">🚪 Logout</button>
+  </aside>
+
+  <main class="admin-main">
+
+    <!-- Overview -->
+    <section class="admin-panel active" id="panel-overview">
+      <h2>Overview</h2>
+      <div class="stat-grid">
+        <div class="stat"><h4>Songs Today</h4><p id="stat-songs-today">—</p></div>
+        <div class="stat"><h4>Pending</h4><p id="stat-pending">—</p></div>
+        <div class="stat"><h4>Approved</h4><p id="stat-approved">—</p></div>
+        <div class="stat"><h4>Active Comp</h4><p id="stat-active-comp">—</p></div>
+        <div class="stat"><h4>Answers</h4><p id="stat-answers">—</p></div>
+        <div class="stat"><h4>Correct</h4><p id="stat-correct">—</p></div>
+        <div class="stat"><h4>Eligible</h4><p id="stat-eligible">—</p></div>
+      </div>
+    </section>
+
+    <!-- Songs -->
+    <section class="admin-panel" id="panel-songs">
+      <h2>Song Requests</h2>
+      <div class="search-bar">
+        <input id="song-search" placeholder="Search name, song, recipient…">
+      </div>
+      <div id="songs-table"></div>
+    </section>
+
+    <!-- Questions -->
+    <section class="admin-panel" id="panel-questions">
+      <h2>Manage Questions / Competitions</h2>
+      <form id="question-form" style="margin-bottom:1rem">
+        <input type="hidden" name="id">
+        <label>Title <input name="title" required maxlength="200"></label>
+        <label>Question <textarea name="question_text" rows="2" required></textarea></label>
+        <label>Type
+          <select name="question_type" id="qtype">
+            <option value="multiple_choice">Multiple choice</option>
+            <option value="true_false">True / False</option>
+            <option value="short_text">Short answer</option>
+          </select>
+        </label>
+        <label>Category <input name="category" value="General knowledge" required></label>
+        <div id="mc-options">
+          <label>A <input name="option_a"></label>
+          <label>B <input name="option_b"></label>
+          <label>C <input name="option_c"></label>
+          <label>D <input name="option_d"></label>
+        </div>
+        <label>Correct answer <input name="correct_answer" required></label>
+        <label>Explanation <textarea name="answer_explanation" rows="2"></textarea></label>
+        <label>Opens at <input type="datetime-local" name="opens_at" required></label>
+        <label>Closes at <input type="datetime-local" name="closes_at" required></label>
+        <label>Prize <input name="prize_description" value="School supplies"></label>
+        <label>Status
+          <select name="status">
+            <option value="draft">Draft</option>
+            <option value="active">Active</option>
+            <option value="closed">Closed</option>
+          </select>
+        </label>
+        <button class="btn-primary" type="submit">Save Competition</button>
+        <p class="form-msg" id="q-msg"></p>
+      </form>
+      <div id="competitions-table"></div>
+    </section>
+
+    <!-- Answers -->
+    <section class="admin-panel" id="panel-answers">
+      <h2>Quiz Answers</h2>
+      <div class="search-bar">
+        <input id="answer-search" placeholder="Search name or phone…">
+        <button class="btn-ghost" id="evaluate-btn">Evaluate</button>
+        <button class="btn-ghost" id="export-answers">Export CSV</button>
+      </div>
+      <div id="answers-table"></div>
+    </section>
+
+    <!-- Winner -->
+    <section class="admin-panel" id="panel-winner">
+      <h2>🏆 Select Today's Winner</h2>
+      <div class="card">
+        <p>Choose a closed & evaluated competition:</p>
+        <select id="winner-comp-select" style="margin:.75rem 0"></select>
+        <button class="btn-primary" id="select-winner-btn">Select Winner (Random)</button>
+        <p class="form-msg" id="winner-msg"></p>
+        <div id="winner-result" style="margin-top:1rem"></div>
+      </div>
+    </section>
+
+    <!-- Announcements -->
+    <section class="admin-panel" id="panel-announcements">
+      <h2>Winners / Announcements</h2>
+      <div id="announcements-table"></div>
+    </section>
+
+    <!-- Settings -->
+    <section class="admin-panel" id="panel-settings">
+      <h2>Settings</h2>
+      <form id="settings-form">
+        <label>Daily song request limit
+          <input type="number" name="daily_song_request_limit" min="1" max="100" required>
+        </label>
+        <label>School timezone
+          <input name="school_timezone" required>
+        </label>
+        <label style="flex-direction:row;align-items:center;gap:.5rem">
+          <input type="checkbox" name="leaderboard_enabled" style="width:auto"> Public leaderboard
+        </label>
+        <label style="flex-direction:row;align-items:center;gap:.5rem">
+          <input type="checkbox" name="public_dedications_enabled" style="width:auto"> Public dedications
+        </label>
+        <label style="flex-direction:row;align-items:center;gap:.5rem">
+          <input type="checkbox" name="song_requests_enabled" style="width:auto"> Accept new song requests
+        </label>
+        <label style="flex-direction:row;align-items:center;gap:.5rem">
+          <input type="checkbox" name="quiz_accepting_answers" style="width:auto"> Quiz accepting answers
+        </label>
+        <button class="btn-primary" type="submit">Save Settings</button>
+        <p class="form-msg" id="settings-msg"></p>
+      </form>
+    </section>
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+  /* global supabase, HBSS_CONFIG */
+const sb = supabase.createClient(HBSS_CONFIG.SUPABASE_URL, HBSS_CONFIG.SUPABASE_ANON_KEY);
+const FN = HBSS_CONFIG.FUNCTIONS_URL;
+let currentUser = null;
+
+/* ---------- Helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => (
+  { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const toast = (m, err = false) => {
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = m;
+  if (err) t.style.borderColor = 'var(--danger)';
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+};
+
+/* ---------- Auth flow ---------- */
+async function checkAuth() {
+  const { data } = await sb.auth.getUser();
+  if (!data.user) return showLogin();
+  const { data: prof } = await sb.from('profiles').select('role').eq('id', data.user.id).single();
+  if (prof?.role !== 'admin') {
+    await sb.auth.signOut();
+    return showLogin('This account is not an administrator.');
+  }
+  currentUser = data.user;
+  showDashboard();
+  loadAll();
+}
+
+function showLogin(msg) {
+  $('#login-view').style.display = 'block';
+  $('#admin-shell').style.display = 'none';
+  if (msg) { $('#login-msg').textContent = msg; $('#login-msg').className = 'form-msg err'; }
+}
+function showDashboard() {
+  $('#login-view').style.display = 'none';
+  $('#admin-shell').style.display = 'grid';
+}
+
+$('#login-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.currentTarget;
+  const msg = $('#login-msg');
+  msg.textContent = 'Signing in…'; msg.className = 'form-msg';
+  const { error } = await sb.auth.signInWithPassword({
+    email: f.email.value, password: f.password.value
+  });
+  if (error) { msg.textContent = 'Sign-in failed: ' + error.message; msg.className = 'form-msg err'; return; }
+  await checkAuth();
+});
+
+$('#logout-btn').addEventListener('click', async () => {
+  await sb.auth.signOut();
+  location.reload();
+});
+
+/* ---------- Navigation ---------- */
+$$('.sidebar button[data-panel]').forEach(b => {
+  b.addEventListener('click', () => {
+    $$('.sidebar button[data-panel]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    $$('.admin-panel').forEach(p => p.classList.remove('active'));
+    $('#panel-' + b.dataset.panel).classList.add('active');
+    onPanelOpen(b.dataset.panel);
+  });
+});
+
+function onPanelOpen(name) {
+  if (name === 'overview') loadOverview();
+  if (name === 'songs') loadSongs();
+  if (name === 'questions') loadCompetitions();
+  if (name === 'answers') loadAnswers();
+  if (name === 'winner') loadWinnerPanel();
+  if (name === 'announcements') loadAnnouncements();
+  if (name === 'settings') loadSettings();
+}
+
+/* ---------- Data loaders ---------- */
+async function loadAll() { await loadOverview(); }
+
+async function loadOverview() {
+  const { data: settings } = await sb.from('app_settings').select('*').eq('id',1).single();
+  const { count: todayCount } = await sb.from('song_requests')
+    .select('id', { count: 'exact', head: true })
+    .gte('submitted_at', new Date(new Date().setHours(0,0,0,0)).toISOString());
+  const { count: pending } = await sb.from('song_requests')
+    .select('id',{count:'exact',head:true}).eq('status','pending');
+  const { count: approved } = await sb.from('song_requests')
+    .select('id',{count:'exact',head:true}).eq('status','approved');
+  const { data: activeComp } = await sb.from('competitions')
+    .select('title').eq('status','active').maybeSingle();
+  const { count: answers } = await sb.from('competition_answers')
+    .select('id',{count:'exact',head:true});
+  const { count: correct } = await sb.from('competition_answers')
+    .select('id',{count:'exact',head:true}).eq('is_correct', true);
+
+  $('#stat-songs-today').textContent = todayCount ?? 0;
+  $('#stat-pending').textContent = pending ?? 0;
+  $('#stat-approved').textContent = approved ?? 0;
+  $('#stat-active-comp').textContent = activeComp ? '1' : '0';
+  $('#stat-answers').textContent = answers ?? 0;
+  $('#stat-correct').textContent = correct ?? 0;
+  $('#stat-eligible').textContent = correct ?? 0;
+}
+
+async function loadSongs() {
+  const q = $('#song-search').value.trim().toLowerCase();
+  const { data } = await sb.from('song_requests').select('*').order('submitted_at', { ascending:false });
+  const filtered = (data || []).filter(r =>
+    !q || [r.student_display_name, r.song_title, r.dedicated_to]
+      .some(v => v?.toLowerCase().includes(q)));
+  if (!filtered.length) { $('#songs-table').innerHTML = '<p class="muted">No requests.</p>'; return; }
+
+  $('#songs-table').innerHTML = `
+    <table><thead><tr>
+      <th>Student</th><th>Song</th><th>To</th><th>Message</th><th>Status</th><th>Actions</th>
+    </tr></thead><tbody>
+    ${filtered.map(r => `<tr>
+      <td>${esc(r.student_display_name)}</td>
+      <td>${esc(r.song_title)}<br><small class="muted">${esc(r.artist_name||'')}</small></td>
+      <td>${esc(r.dedicated_to)}</td>
+      <td style="max-width:200px">${esc(r.dedication_message)}</td>
+      <td>${esc(r.status)}</td>
+      <td><div class="row-actions">
+        ${r.status==='pending'?`
+          <button class="btn-approve" data-act="approve" data-id="${r.id}">✓</button>
+          <button class="btn-reject" data-act="reject" data-id="${r.id}">✕</button>`:''}
+        ${r.status==='approved'?`
+          <button class="btn-play" data-act="played" data-id="${r.id}">▶ Played</button>
+          <button class="btn-pub" data-act="publish" data-id="${r.id}">Publish</button>`:''}
+      </div></td>
+    </tr>`).join('')}
+    </tbody></table>`;
+
+  $$('#songs-table [data-act]').forEach(b => b.addEventListener('click', async () => {
+    const id = b.dataset.id, act = b.dataset.act;
+    const patch = {};
+    if (act === 'approve') patch.status = 'approved';
+    if (act === 'reject') patch.status = 'rejected';
+    if (act === 'played') patch.status = 'played';
+    if (act === 'publish') patch.is_public = true;
+    const { error } = await sb.from('song_requests').update(patch).eq('id', id);
+    if (error) return toast('Error: ' + error.message, true);
+    toast('Updated'); loadSongs();
+  }));
+}
+
+$('#song-search').addEventListener('input', loadSongs);
+
+async function loadCompetitions() {
+  const { data } = await sb.from('competitions').select('*').order('created_at', { ascending:false });
+  if (!data?.length) { $('#competitions-table').innerHTML = '<p class="muted">No competitions yet.</p>'; return; }
+  $('#competitions-table').innerHTML = `
+    <table><thead><tr><th>Title</th><th>Status</th><th>Type</th><th>Opens</th><th>Closes</th><th>Actions</th></tr></thead>
+    <tbody>${data.map(c => `<tr>
+      <td>${esc(c.title)}</td><td>${esc(c.status)}</td><td>${esc(c.question_type)}</td>
+      <td>${new Date(c.opens_at).toLocaleString()}</td>
+      <td>${new Date(c.closes_at).toLocaleString()}</td>
+      <td><div class="row-actions">
+        <button class="btn-play" data-edit="${c.id}">Edit</button>
+        ${c.status==='active'?`<button class="btn-reject" data-close="${c.id}">Close</button>`:''}
+      </div></td>
+    </tr>`).join('')}</tbody></table>`;
+
+  $$('#competitions-table [data-close]').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('Close this competition?')) return;
+    const { error } = await sb.from('competitions').update({ status:'closed' }).eq('id', b.dataset.close);
+    if (error) return toast(error.message, true);
+    toast('Closed'); loadCompetitions();
+  }));
+  $$('#competitions-table [data-edit]').forEach(b => b.addEventListener('click', () => {
+    const c = data.find(x => x.id === b.dataset.edit);
+    const f = $('#question-form');
+    f.id.value = c.id; f.title.value = c.title; f.question_text.value = c.question_text;
+    f.question_type.value = c.question_type; f.category.value = c.category;
+    f.option_a.value = c.option_a||''; f.option_b.value = c.option_b||'';
+    f.option_c.value = c.option_c||''; f.option_d.value = c.option_d||'';
+    f.correct_answer.value = c.correct_answer||'';
+    f.answer_explanation.value = c.answer_explanation||'';
+    f.opens_at.value = c.opens_at.slice(0,16);
+    f.closes_at.value = c.closes_at.slice(0,16);
+    f.prize_description.value = c.prize_description||'';
+    f.status.value = c.status === 'evaluated' ? 'closed' : c.status;
+    window.scrollTo(0,0);
+  }));
+}
+
+$('#qtype').addEventListener('change', () => {
+  const show = $('#qtype').value === 'multiple_choice';
+  $('#mc-options').style.display = show ? '' : 'none';
+});
+
+$('#question-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.currentTarget;
+  const msg = $('#q-msg');
+  msg.textContent = 'Saving…'; msg.className = 'form-msg';
+  const payload = {
+    title: f.title.value.trim(),
+    question_text: f.question_text.value.trim(),
+    question_type: f.question_type.value,
+    category: f.category.value.trim(),
+    option_a: f.option_a.value.trim() || null,
+    option_b: f.option_b.value.trim() || null,
+    option_c: f.option_c.value.trim() || null,
+    option_d: f.option_d.value.trim() || null,
+    correct_answer: f.correct_answer.value.trim(),
+    answer_explanation: f.answer_explanation.value.trim() || null,
+    opens_at: new Date(f.opens_at.value).toISOString(),
+    closes_at: new Date(f.closes_at.value).toISOString(),
+    prize_description: f.prize_description.value.trim(),
+    status: f.status.value,
+    created_by: currentUser.id,
+  };
+  const id = f.id.value;
+  let res;
+  if (id) res = await sb.from('competitions').update(payload).eq('id', id);
+  else res = await sb.from('competitions').insert(payload);
+  if (res.error) { msg.textContent = 'Error: ' + res.error.message; msg.className = 'form-msg err'; return; }
+  msg.textContent = 'Saved ✓'; msg.className = 'form-msg ok';
+  f.reset(); f.id.value = '';
+  loadCompetitions();
+});
+
+async function loadAnswers() {
+  const q = $('#answer-search').value.trim().toLowerCase();
+  const { data } = await sb.from('competition_answers')
+    .select('*, competitions(title)').order('submitted_at',{ascending:false});
+  const filtered = (data||[]).filter(a => !q ||
+    a.student_name.toLowerCase().includes(q) || a.phone_number.includes(q));
+  if (!filtered.length) { $('#answers-table').innerHTML = '<p class="muted">No answers.</p>'; return; }
+  $('#answers-table').innerHTML = `
+    <table><thead><tr>
+      <th>Student</th><th>Phone</th><th>Answer</th><th>Result</th><th>Competition</th><th></th>
+    </tr></thead><tbody>
+    ${filtered.map(a => `<tr>
+      <td>${esc(a.student_name)}</td>
+      <td>${esc(a.phone_number)}</td>
+      <td>${esc(a.answer_text)}</td>
+      <td>${a.is_correct === true ? '✅ Correct' : a.is_correct === false ? '❌ Incorrect' : '⏳ Pending'}</td>
+      <td>${esc(a.competitions?.title||'')}</td>
+      <td>${a.is_correct === null && a.competitions ? `
+        <button class="btn-approve" data-mark="true" data-id="${a.id}">✓</button>
+        <button class="btn-reject" data-mark="false" data-id="${a.id}">✕</button>` : ''}</td>
+    </tr>`).join('')}
+    </tbody></table>`;
+
+  $$('#answers-table [data-mark]').forEach(b => b.addEventListener('click', async () => {
+    const patch = { is_correct: b.dataset.mark === 'true',
+      reviewed_by: currentUser.id, reviewed_at: new Date().toISOString() };
+    const { error } = await sb.from('competition_answers').update(patch).eq('id', b.dataset.id);
+    if (error) return toast(error.message, true);
+    toast('Marked'); loadAnswers();
+  }));
+}
+
+$('#answer-search').addEventListener('input', loadAnswers);
+
+$('#evaluate-btn').addEventListener('click', async () => {
+  const { data: closed } = await sb.from('competitions').select('id,title').eq('status','closed');
+  if (!closed?.length) return toast('No closed competitions to evaluate.', true);
+  for (const c of closed) {
+    const { data, error } = await sb.rpc('evaluate_competition', { p_competition_id: c.id });
+    if (error) return toast(error.message, true);
+    toast(`Evaluated "${c.title}": ${data?.correct_count ?? 0} correct`);
+  }
+  loadAnswers(); loadOverview();
+});
+
+$('#export-answers').addEventListener('click', async () => {
+  const { data } = await sb.from('competition_answers')
+    .select('student_name,phone_number,answer_text,is_correct,submitted_at,competitions(title)');
+  const rows = [['Student','Phone','Answer','Correct','Submitted','Competition']];
+  (data||[]).forEach(a => rows.push([
+    a.student_name, a.phone_number, a.answer_text,
+    a.is_correct === null ? 'pending' : a.is_correct ? 'correct' : 'incorrect',
+    a.submitted_at, a.competitions?.title || ''
+  ]));
+  const csv = rows.map(r => r.map(x => `"${String(x??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type:'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `hbss_answers_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+});
+
+async function loadWinnerPanel() {
+  const { data } = await sb.from('competitions')
+    .select('id,title,status').in('status',['closed','evaluated']);
+  const sel = $('#winner-comp-select');
+  sel.innerHTML = (data||[]).map(c =>
+    `<option value="${c.id}">${esc(c.title)} — ${esc(c.status)}</option>`).join('')
+    || '<option value="">No closed competitions</option>';
+}
+
+$('#select-winner-btn').addEventListener('click', async () => {
+  const id = $('#winner-comp-select').value;
+  if (!id) return toast('No competition selected.', true);
+  if (!confirm('Select a random winner from eligible participants?')) return;
+  const msg = $('#winner-msg');
+  msg.textContent = 'Selecting…'; msg.className = 'form-msg';
+  try {
+    const { data, error } = await sb.rpc('select_winner', { p_competition_id: id });
+    if (error) throw error;
+    if (!data.ok) { msg.textContent = data.message || data.error; msg.className = 'form-msg err'; return; }
+    msg.textContent = 'Winner selected! Load details below.'; msg.className = 'form-msg ok';
+
+    const { data: w } = await sb.from('winners')
+      .select('*, competitions(title)').eq('competition_id', id).maybeSingle();
+
+    $('#winner-result').innerHTML = w ? `
+      <div class="card">
+        <h3>🎉 ${esc(w.display_name)}</h3>
+        <p><strong>Competition:</strong> ${esc(w.competitions?.title||'')}</p>
+        <p><strong>Prize:</strong> ${esc(w.prize_description)}</p>
+        <p><strong>Phone (private):</strong> ${esc(w.phone_number || '—')}</p>
+        <p><strong>Status:</strong> ${esc(w.status)}</p>
+        <button class="btn-primary" id="publish-winner-btn">Publish Winner</button>
+      </div>` : '';
+    if (w) $('#publish-winner-btn').addEventListener('click', async () => {
+      const { error } = await sb.from('winners').update({
+        status:'published', published_at: new Date().toISOString()
+      }).eq('id', w.id);
+      if (error) return toast(error.message, true);
+      toast('Published!'); loadAnnouncements();
+    });
+  } catch (e) {
+    msg.textContent = 'Failed: ' + e.message; msg.className = 'form-msg err';
+  }
+});
+
+async function loadAnnouncements() {
+  const { data } = await sb.from('winners')
+    .select('*, competitions(title)').order('selected_at',{ascending:false});
+  if (!data?.length) { $('#announcements-table').innerHTML = '<p class="muted">No winners yet.</p>'; return; }
+  $('#announcements-table').innerHTML = `
+    <table><thead><tr><th>Winner</th><th>Competition</th><th>Prize</th><th>Phone</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>${data.map(w => `<tr>
+      <td>${esc(w.display_name)}</td>
+      <td>${esc(w.competitions?.title||'')}</td>
+      <td>${esc(w.prize_description)}</td>
+      <td>${esc(w.phone_number||'—')}</td>
+      <td>${esc(w.status)}</td>
+      <td>${w.status==='pending'
+        ? `<button class="btn-pub" data-publish="${w.id}">Publish</button>`
+        : `<button class="btn-reject" data-withdraw="${w.id}">Withdraw</button>`}</td>
+    </tr>`).join('')}</tbody></table>`;
+
+  $$('#announcements-table [data-publish]').forEach(b => b.addEventListener('click', async () => {
+    const { error } = await sb.from('winners').update({
+      status:'published', published_at: new Date().toISOString()
+    }).eq('id', b.dataset.publish);
+    if (error) return toast(error.message, true);
+    toast('Published'); loadAnnouncements();
+  }));
+  $$('#announcements-table [data-withdraw]').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('Withdraw this winner?')) return;
+    const { error } = await sb.from('winners').update({ status:'withdrawn' }).eq('id', b.dataset.withdraw);
+    if (error) return toast(error.message, true);
+    toast('Withdrawn'); loadAnnouncements();
+  }));
+}
+
+async function loadSettings() {
+  const { data } = await sb.from('app_settings').select('*').eq('id',1).single();
+  const f = $('#settings-form');
+  f.daily_song_request_limit.value = data.daily_song_request_limit;
+  f.school_timezone.value = data.school_timezone;
+  f.leaderboard_enabled.checked = data.leaderboard_enabled;
+  f.public_dedications_enabled.checked = data.public_dedications_enabled;
+  f.song_requests_enabled.checked = data.song_requests_enabled;
+  f.quiz_accepting_answers.checked = data.quiz_accepting_answers;
+}
+
+$('#settings-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.currentTarget;
+  const msg = $('#settings-msg');
+  msg.textContent = 'Saving…'; msg.className = 'form-msg';
+  const patch = {
+    daily_song_request_limit: parseInt(f.daily_song_request_limit.value,10),
+    school_timezone: f.school_timezone.value.trim(),
+    leaderboard_enabled: f.leaderboard_enabled.checked,
+    public_dedications_enabled: f.public_dedications_enabled.checked,
+    song_requests_enabled: f.song_requests_enabled.checked,
+    quiz_accepting_answers: f.quiz_accepting_answers.checked,
+    updated_at: new Date().toISOString(),
+    updated_by: currentUser.id,
+  };
+  const { error } = await sb.from('app_settings').update(patch).eq('id',1);
+  if (error) { msg.textContent = 'Error: ' + error.message; msg.className = 'form-msg err'; return; }
+  msg.textContent = 'Saved ✓'; msg.className = 'form-msg ok';
+});
+
+/* ---------- Auth listener + init ---------- */
+sb.auth.onAuthStateChange((_evt, session) => {
+  if (!session) showLogin();
+});
+checkAuth();
+  </script>
+</body>
+</html>

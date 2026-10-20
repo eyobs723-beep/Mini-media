@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HBSS Mini Media — Song & Win 🎵🏆</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<style>
+:root{
+  --bg:#0b1020; --card:#141a33; --card-2:#1c2444;
+  --blue:#3b82f6; --purple:#8b5cf6; --accent:#22d3ee;
+  --text:#f1f5f9; --muted:#94a3b8;
+  --success:#22c55e; --danger:#ef4444; --warn:#f59e0b;
+  --radius:14px; --radius-sm:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.5}
+body{padding-bottom:80px}
+
+/* Header */
+.site-header{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  gap:1rem;padding:1rem 1.25rem;background:linear-gradient(135deg,#0f1531,#1a1145);
+  border-bottom:1px solid rgba(139,92,246,.3);position:sticky;top:0;z-index:50
+}
+.brand{display:flex;align-items:center;gap:.75rem}
+.brand h1{font-size:1.15rem;letter-spacing:.5px}
+.logo{font-size:1.75rem}
+.tagline{font-size:.75rem;color:var(--muted)}
+.main-nav{display:flex;flex-wrap:wrap;gap:.4rem}
+.main-nav a{
+  color:var(--text);text-decoration:none;padding:.45rem .75rem;border-radius:var(--radius-sm);
+  font-size:.85rem;transition:background .15s
+}
+.main-nav a:hover{background:rgba(139,92,246,.2)}
+.admin-link{border:1px solid var(--purple)}
+
+/* Main */
+main{max-width:960px;margin:0 auto;padding:1rem}
+.section{padding:1.5rem 0}
+.section h2{font-size:1.35rem;margin-bottom:1rem;
+  background:linear-gradient(90deg,var(--blue),var(--purple));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--muted);margin-bottom:1.25rem}
+.muted{color:var(--muted)}
+.info-line{color:var(--accent);margin:.5rem 0}
+
+/* Status cards */
+.status-grid{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:1.5rem}
+.status-card{background:var(--card);border:1px solid rgba(139,92,246,.25);
+  padding:1rem;border-radius:var(--radius);text-align:center}
+.status-card .icon{font-size:1.5rem;display:block;margin-bottom:.25rem}
+.status-card h3{font-size:.85rem;color:var(--muted);margin-bottom:.25rem}
+.status-card p{font-size:.95rem;font-weight:500}
+
+/* Action cards */
+.action-grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.action-card{
+  background:linear-gradient(135deg,var(--card),var(--card-2));
+  border:1px solid rgba(139,92,246,.35);border-radius:var(--radius);
+  padding:1.5rem 1rem;color:var(--text);cursor:pointer;font:inherit;text-align:center;
+  transition:transform .15s,border-color .15s
+}
+.action-card:hover{transform:translateY(-2px);border-color:var(--purple)}
+.action-card .icon{font-size:2rem;display:block;margin-bottom:.5rem}
+.action-card h3{font-size:1rem}
+
+/* Forms */
+form{display:flex;flex-direction:column;gap:.75rem;background:var(--card);
+  padding:1.25rem;border-radius:var(--radius);border:1px solid rgba(139,92,246,.2)}
+label{display:flex;flex-direction:column;gap:.3rem;font-size:.85rem;color:var(--muted)}
+input,textarea,select{
+  background:var(--card-2);border:1px solid rgba(139,92,246,.3);color:var(--text);
+  padding:.7rem .85rem;border-radius:var(--radius-sm);font:inherit;width:100%
+}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--blue);border-color:transparent}
+button{cursor:pointer;font:inherit}
+.btn-primary{
+  background:linear-gradient(90deg,var(--blue),var(--purple));
+  color:#fff;border:none;padding:.85rem 1.25rem;border-radius:var(--radius-sm);
+  font-weight:600;transition:opacity .15s
+}
+.btn-primary:disabled{opacity:.55;cursor:not-allowed}
+.btn-ghost{background:transparent;border:1px solid var(--purple);color:var(--text);
+  padding:.6rem 1rem;border-radius:var(--radius-sm)}
+.form-msg{margin-top:.5rem;font-size:.9rem;min-height:1.2em}
+.form-msg.ok{color:var(--success)}
+.form-msg.err{color:var(--danger)}
+
+/* Challenge card */
+.card{background:var(--card);padding:1.25rem;border-radius:var(--radius);
+  border:1px solid rgba(139,92,246,.2)}
+.card h3{margin-bottom:.5rem;color:var(--accent)}
+.badge{display:inline-block;padding:.15rem .5rem;border-radius:6px;
+  font-size:.7rem;font-weight:600;text-transform:uppercase;margin-right:.5rem}
+.badge.open{background:rgba(34,197,94,.2);color:var(--success)}
+.badge.closed{background:rgba(239,68,68,.2);color:var(--danger)}
+.options{display:flex;flex-direction:column;gap:.5rem;margin:.75rem 0}
+.option{background:var(--card-2);padding:.7rem;border-radius:var(--radius-sm);
+  border:1px solid rgba(139,92,246,.25);cursor:pointer;display:flex;gap:.6rem;align-items:center}
+.option input{width:auto;margin:0}
+.option.selected{border-color:var(--accent);background:rgba(34,211,238,.1)}
+
+/* Winners / leaderboard lists */
+.list-item{background:var(--card);padding:1rem;border-radius:var(--radius);
+  margin-bottom:.75rem;border-left:4px solid var(--purple)}
+.list-item h3{font-size:1rem;margin-bottom:.25rem}
+.list-item .meta{font-size:.8rem;color:var(--muted)}
+.gold{color:#fbbf24;font-weight:700}
+
+/* Rules */
+.rules{background:var(--card);padding:1rem 1.25rem 1rem 2.5rem;border-radius:var(--radius)}
+.rules li{margin:.4rem 0}
+
+/* Footer */
+footer{text-align:center;padding:1.5rem 1rem;color:var(--muted);font-size:.8rem}
+
+/* Toast */
+.toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);
+  background:var(--card-2);border:1px solid var(--purple);color:var(--text);
+  padding:.75rem 1.25rem;border-radius:var(--radius);z-index:200;
+  box-shadow:0 4px 16px rgba(0,0,0,.5);font-size:.9rem}
+
+@media (max-width:600px){
+  .site-header{flex-direction:column;align-items:flex-start}
+  .main-nav{gap:.2rem;width:100%}
+  .main-nav a{font-size:.78rem;padding:.35rem .55rem}
+}
+
+</style>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <span class="logo">🎵🏆</span>
+    <div>
+      <h1>HBSS MINI MEDIA</h1>
+      <p class="tagline">Your Music. Your Voice. Your Chance to Win!</p>
+    </div>
+  </div>
+  <nav class="main-nav">
+    <a href="#home">Home</a>
+    <a href="#request">Request a Song</a>
+    <a href="#challenge">Daily Challenge</a>
+    <a href="#winners">Winners</a>
+    <a href="#leaderboard">Leaderboard</a>
+    <a href="#rules">Rules</a>
+    <a href="admin.html" class="admin-link" aria-label="Admin sign in">🔒 Admin</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section id="home" class="section">
+  <h2>Welcome to HBSS Mini Media!</h2>
+  <p class="lead">Request your favorite songs, dedicate music to your friends, challenge your knowledge, and get a chance to win exciting gifts!</p>
+
+  <div class="status-grid">
+    <div class="status-card"><span class="icon">🎶</span>
+      <h3>Song Requests</h3><p id="status-songs">Loading…</p></div>
+    <div class="status-card"><span class="icon">🧠</span>
+      <h3>Quiz Competition</h3><p id="status-quiz">Loading…</p></div>
+    <div class="status-card"><span class="icon">⏰</span>
+      <h3>Deadline</h3><p id="status-deadline">Loading…</p></div>
+    <div class="status-card"><span class="icon">🏆</span>
+      <h3>Latest Winner</h3><p id="status-winner">Loading…</p></div>
+  </div>
+
+  <div class="action-grid">
+    <button class="action-card" data-goto="request">
+      <span class="icon">🎵</span><h3>Request a Song</h3>
+    </button>
+    <button class="action-card" data-goto="challenge">
+      <span class="icon">🧠</span><h3>Answer Today's Question</h3>
+    </button>
+    <button class="action-card" data-goto="winners">
+      <span class="icon">🏆</span><h3>Meet Our Winners</h3>
+    </button>
+  </div>
+</section>
+
+<!-- ============ SONG REQUEST ============ -->
+<section id="request" class="section">
+  <h2>🎵 Request a Song</h2>
+  <p id="request-limit-info" class="info-line"></p>
+  <form id="song-form" novalidate>
+    <label>Your name <input type="text" name="student_display_name" maxlength="80" required></label>
+    <label>Song title <input type="text" name="song_title" maxlength="200" required></label>
+    <label>Artist name (optional) <input type="text" name="artist_name" maxlength="200"></label>
+    <label>Dedicate to <input type="text" name="dedicated_to" maxlength="80" required></label>
+    <label>Dedication message <textarea name="dedication_message" maxlength="500" rows="3" required></textarea></label>
+    <button type="submit" class="btn-primary" id="song-submit">Submit Song Request</button>
+    <p class="form-msg" id="song-msg" role="status"></p>
+  </form>
+</section>
+
+<!-- ============ CHALLENGE ============ -->
+<section id="challenge" class="section">
+  <h2>🧠 Mini Media Daily Challenge</h2>
+  <div id="challenge-container" class="card">
+    <p class="muted">Loading challenge…</p>
+  </div>
+</section>
+
+<!-- ============ WINNERS ============ -->
+<section id="winners" class="section">
+  <h2>🏆 Winners</h2>
+  <div id="winners-list"><p class="muted">Loading…</p></div>
+</section>
+
+<!-- ============ LEADERBOARD ============ -->
+<section id="leaderboard" class="section">
+  <h2>📊 Leaderboard</h2>
+  <div id="leaderboard-list"><p class="muted">Loading…</p></div>
+</section>
+
+<!-- ============ RULES ============ -->
+<section id="rules" class="section">
+  <h2>📜 Competition Rules</h2>
+  <ul class="rules">
+    <li>One answer per student per challenge.</li>
+    <li>Answers cannot be edited after submission.</li>
+    <li>Submissions are only accepted between the opening and closing times.</li>
+    <li>Only approved dedication messages are published.</li>
+    <li>Be respectful. Inappropriate messages will be rejected.</li>
+    <li>Phone numbers are collected only to contact winners about their gift. They are never shown publicly.</li>
+    <li>Winners are selected fairly at random from correct answers.</li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  <p>HBSS Mini Media — Admin: Mini Media Leader Eyob S.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+  /* global supabase, HBSS_CONFIG */
+
+const sb = supabase.createClient(HBSS_CONFIG.SUPABASE_URL, HBSS_CONFIG.SUPABASE_ANON_KEY);
+const FN = HBSS_CONFIG.FUNCTIONS_URL;
+
+let activeCompetition = null;
+let submitAnswerBusy = false;
+
+/* ---------- Helpers ---------- */
+function toast(msg, isError = false) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  if (isError) t.style.borderColor = 'var(--danger)';
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+function esc(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+function goTo(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+}
+document.querySelectorAll('[data-goto]').forEach(b =>
+  b.addEventListener('click', () => goTo(b.dataset.goto))
+);
+
+/* ---------- Load status ---------- */
+async function loadStatus() {
+  const today = new Date().toISOString().split('T')[0];
+
+  const { data: settings } = await sb.from('app_settings').select('*').eq('id', 1).single();
+  const { count } = await sb.from('song_requests').select('id', { count: 'exact', head: true });
+
+  // Today's request count (server function)
+  const { data: todayCount } = await sb.rpc('song_requests_today_count');
+  const used = todayCount ?? 0;
+  const limit = settings?.daily_song_request_limit ?? 3;
+
+  document.getElementById('status-songs').textContent =
+    !settings?.song_requests_enabled
+      ? 'Closed'
+      : (used >= limit ? 'Full for today' : `Open — ${used}/${limit} used`);
+
+  document.getElementById('request-limit-info').textContent =
+    !settings?.song_requests_enabled
+      ? 'Song requests are currently closed.'
+      : (used >= limit
+        ? `Today's song requests are full (${used}/${limit}). Please come back tomorrow.`
+        : `Today's song requests: ${used} of ${limit} used — ${limit - used} available.`);
+
+  // Active competition
+  const { data: comp } = await sb.from('public_competitions')
+    .select('*').eq('status', 'active').maybeSingle();
+  activeCompetition = comp;
+
+  const quizEl = document.getElementById('status-quiz');
+  const deadlineEl = document.getElementById('status-deadline');
+
+  if (comp) {
+    quizEl.textContent = 'Open';
+    deadlineEl.textContent = new Date(comp.closes_at).toLocaleString();
+  } else {
+    quizEl.textContent = 'Closed';
+    deadlineEl.textContent = '—';
+  }
+
+  // Latest winner
+  const { data: winners } = await sb.from('public_winners')
+    .select('*').order('published_at', { ascending: false }).limit(1);
+  document.getElementById('status-winner').textContent =
+    winners?.[0] ? `🏅 ${winners[0].display_name}` : 'No winner yet';
+}
+
+/* ---------- Song request form ---------- */
+document.getElementById('song-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const btn = document.getElementById('song-submit');
+  const msg = document.getElementById('song-msg');
+  msg.textContent = ''; msg.className = 'form-msg';
+
+  const payload = {
+    student_display_name: form.student_display_name.value.trim(),
+    song_title: form.song_title.value.trim(),
+    artist_name: form.artist_name.value.trim(),
+    dedicated_to: form.dedicated_to.value.trim(),
+    dedication_message: form.dedication_message.value.trim(),
+  };
+
+  if (!payload.student_display_name || !payload.song_title ||
+      !payload.dedicated_to || !payload.dedication_message) {
+    msg.textContent = 'Please fill in all required fields.';
+    msg.className = 'form-msg err';
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Submitting…';
+  try {
+    const res = await fetch(`${FN}/submit-song-request`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: HBSS_CONFIG.SUPABASE_ANON_KEY },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      msg.textContent = data.message; msg.className = 'form-msg ok';
+      form.reset();
+      loadStatus();
+    } else {
+      msg.textContent = data.message || 'Submission failed.';
+      msg.className = 'form-msg err';
+    }
+  } catch {
+    msg.textContent = 'Network error. Please try again.';
+    msg.className = 'form-msg err';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Submit Song Request';
+  }
+});
+
+/* ---------- Challenge ---------- */
+async function renderChallenge() {
+  const el = document.getElementById('challenge-container');
+  if (!activeCompetition) {
+    el.innerHTML = `<p class="muted">No active challenge right now. Stay tuned for the next Mini Media question!</p>`;
+    return;
+  }
+  const c = activeCompetition;
+  const closed = new Date(c.closes_at) < new Date();
+
+  let optionsHtml = '';
+  if (c.question_type === 'multiple_choice') {
+    optionsHtml = ['option_a','option_b','option_c','option_d'].map((k, i) => {
+      const letter = String.fromCharCode(65 + i);
+      const val = c[k];
+      if (!val) return '';
+      return `<label class="option">
+        <input type="radio" name="answer_opt" value="${esc(val)}">
+        <span><strong>${letter}.</strong> ${esc(val)}</span></label>`;
+    }).join('');
+  } else if (c.question_type === 'true_false') {
+    optionsHtml = `
+      <label class="option"><input type="radio" name="answer_opt" value="True"><span>True</span></label>
+      <label class="option"><input type="radio" name="answer_opt" value="False"><span>False</span></label>`;
+  }
+
+  el.innerHTML = `
+    <span class="badge ${closed ? 'closed' : 'open'}">${closed ? 'Closed' : 'Open'}</span>
+    <span class="badge" style="background:rgba(59,130,246,.2);color:var(--blue)">${esc(c.category)}</span>
+    <h3>${esc(c.title)}</h3>
+    <p style="margin:.75rem 0">${esc(c.question_text)}</p>
+    <p class="muted" style="font-size:.8rem">
+      Opens: ${new Date(c.opens_at).toLocaleString()} • Closes: ${new Date(c.closes_at).toLocaleString()}
+    </p>
+    <p class="muted" style="font-size:.85rem;margin-top:.5rem">🎁 Prize: ${esc(c.prize_description || 'School supplies')}</p>
+
+    ${closed
+      ? `<p class="form-msg err" style="margin-top:1rem">This competition has closed.</p>`
+      : `
+    <form id="challenge-form" style="margin-top:1rem">
+      <label>Student's full name
+        <input type="text" name="student_name" maxlength="120" required>
+      </label>
+      <label>Phone number (09…, 07…, +251…)
+        <input type="tel" name="phone_number" maxlength="20" placeholder="09XXXXXXXX" required>
+      </label>
+      <p class="muted" style="font-size:.8rem">
+        Your phone number is used only to contact winners. It is never shown publicly.
+      </p>
+      ${c.question_type === 'short_text'
+        ? `<label>Your answer
+            <textarea name="answer_text" rows="2" maxlength="500" required></textarea>
+          </label>`
+        : `<div class="options">${optionsHtml}</div>
+           <input type="hidden" name="answer_text" id="answer-hidden">`}
+      <button type="submit" class="btn-primary" id="challenge-submit">Submit My Answer</button>
+      <p class="form-msg" id="challenge-msg" role="status"></p>
+    </form>`}
+  `;
+
+  if (!closed) attachChallengeHandlers(c);
+}
+
+function attachChallengeHandlers(c) {
+  const form = document.getElementById('challenge-form');
+  // highlight selected option
+  form.querySelectorAll('.option input[type=radio]').forEach(r => {
+    r.addEventListener('change', () => {
+      form.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      r.closest('.option').classList.add('selected');
+    });
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (submitAnswerBusy) return;
+
+    const msg = document.getElementById('challenge-msg');
+    msg.textContent = ''; msg.className = 'form-msg';
+
+    const student_name = form.student_name.value.trim();
+    const phone_number = form.phone_number.value.trim();
+    let answer_text = '';
+
+    if (c.question_type === 'short_text') {
+      answer_text = form.answer_text.value.trim();
+    } else {
+      const sel = form.querySelector('input[name="answer_opt"]:checked');
+      if (!sel) { msg.textContent = 'Please choose an answer.'; msg.className = 'form-msg err'; return; }
+      answer_text = sel.value;
+    }
+
+    if (!student_name || !phone_number || !answer_text) {
+      msg.textContent = 'Please complete all required fields.';
+      msg.className = 'form-msg err';
+      return;
+    }
+
+    // Basic client phone validation (server re-validates)
+    const normalizedPhone = phone_number.replace(/[\s-]/g, '');
+    if (!/^(0[79]\d{8}|\+251[79]\d{8}|251[79]\d{8})$/.test(normalizedPhone)) {
+      msg.textContent = 'Please enter a valid Ethiopian mobile number (09…/07…/+251…).';
+      msg.className = 'form-msg err';
+      return;
+    }
+
+    submitAnswerBusy = true;
+    const btn = document.getElementById('challenge-submit');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+
+    try {
+      const { data, error } = await sb.rpc('submit_answer', {
+        p_competition_id: c.id,
+        p_student_name: student_name,
+        p_phone_raw: phone_number,
+        p_answer_text: answer_text,
+      });
+      if (error) throw error;
+
+      if (data.ok) {
+        msg.textContent = data.message;
+        msg.className = 'form-msg ok';
+        btn.textContent = 'Submitted ✓';
+        form.querySelectorAll('input,textarea,button').forEach(el => el.disabled = true);
+      } else {
+        msg.textContent = data.message || 'Submission failed.';
+        msg.className = 'form-msg err';
+        btn.disabled = false; btn.textContent = 'Submit My Answer';
+      }
+    } catch (err) {
+      msg.textContent = 'Something went wrong. Please try again.';
+      msg.className = 'form-msg err';
+      btn.disabled = false; btn.textContent = 'Submit My Answer';
+    } finally {
+      submitAnswerBusy = false;
+    }
+  });
+}
+
+/* ---------- Winners ---------- */
+async function loadWinners() {
+  const el = document.getElementById('winners-list');
+  const { data } = await sb.from('public_winners')
+    .select('*, competitions(title)')
+    .order('published_at', { ascending: false });
+
+  if (!data?.length) {
+    el.innerHTML = '<p class="muted">No winners yet. Check back soon!</p>';
+    return;
+  }
+  el.innerHTML = data.map(w => `
+    <div class="list-item">
+      <h3>🎉 <span class="gold">${esc(w.display_name)}</span></h3>
+      <p>${esc(w.competitions?.title || 'Challenge')}</p>
+      <p class="meta">Prize: ${esc(w.prize_description)} • ${new Date(w.published_at).toLocaleDateString()}</p>
+      <p class="meta">${esc(w.message)}</p>
+    </div>
+  `).join('');
+}
+
+/* ---------- Leaderboard ---------- */
+async function loadLeaderboard() {
+  const el = document.getElementById('leaderboard-list');
+  const { data: settings } = await sb.from('app_settings').select('leaderboard_enabled').eq('id',1).single();
+  if (!settings?.leaderboard_enabled) {
+    el.innerHTML = '<p class="muted">Leaderboard is currently hidden.</p>';
+    return;
+  }
+  const { data } = await sb.from('public_leaderboard').select('*');
+  if (!data?.length) {
+    el.innerHTML = '<p class="muted">No results yet.</p>';
+    return;
+  }
+  el.innerHTML = data.map((r, i) => `
+    <div class="list-item">
+      <h3>${i+1}. ${esc(r.display_name)}</h3>
+      <p class="meta">🏆 ${r.wins} win${r.wins>1?'s':''}</p>
+    </div>
+  `).join('');
+}
+
+/* ---------- Init ---------- */
+(async function init() {
+  await loadStatus();
+  await renderChallenge();
+  await loadWinners();
+  await loadLeaderboard();
+})();
+  </script>
+</body>
+</html>
